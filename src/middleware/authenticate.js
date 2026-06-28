@@ -5,13 +5,13 @@ import { User } from '../models/user.js';
 export const authenticate = async (req, res, next) => {
   console.log('👉 СИРІ ЗАГОЛОВКИ:', req.headers.cookie);
   console.log('👉 РОЗПАРШЕНІ КУКИ:', req.cookies);
-  const { accessToken } = req.cookies;
+  const { sessionId, accessToken } = req.cookies;
 
-  if (!accessToken) {
+  if (!sessionId || !accessToken) {
     throw createHttpError(401, 'Missing access token');
   }
 
-  const session = await Session.findOne({ accessToken });
+  const session = await Session.findOne({ sessionId, accessToken });
 
   if (!session) {
     throw createHttpError(401, 'Session not found');

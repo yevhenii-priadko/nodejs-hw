@@ -47,7 +47,7 @@ export const loginUser = async (req, res) => {
   const newSession = await createSession(user._id);
 
   setSessionCookies(res, newSession);
-  res.status(201).json(user);
+  res.status(200).json(user);
 };
 
 export const logoutUser = async (req, res) => {
@@ -80,7 +80,7 @@ export const refreshUserSession = async (req, res) => {
     throw createHttpError(401, 'Session not found');
   }
 
-  const isSessionTokenExpired = new Date(session.refreshTokenValidUntil);
+  const isSessionTokenExpired = session.refreshTokenValidUntil < new Date();
 
   if (isSessionTokenExpired) {
     await session.deleteOne();
@@ -90,9 +90,9 @@ export const refreshUserSession = async (req, res) => {
     throw createHttpError(401, 'Session token expired');
   }
 
-  await Session.deleteOne();
+  await session.deleteOne();
 
-  const newSession = createSession(session.userId);
+  const newSession = await createSession(session.userId);
 
   setSessionCookies(res, newSession);
 
