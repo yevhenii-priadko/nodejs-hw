@@ -1,6 +1,5 @@
 // src/server.js
 import dns from 'dns';
-
 import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
@@ -9,7 +8,9 @@ import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import notesRoutes from './routes/notesRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 import { errors } from 'celebrate';
+import cookieParser from 'cookie-parser';
 
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 const app = express();
@@ -23,8 +24,10 @@ app.use(
   }),
 );
 app.use(cors());
+app.use(cookieParser());
 
 app.use(notesRoutes);
+app.use(authRoutes);
 
 app.use(notFoundHandler);
 

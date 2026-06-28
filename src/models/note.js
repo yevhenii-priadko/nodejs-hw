@@ -13,6 +13,12 @@ const noteSchema = new Schema(
       default: '',
       trim: true,
     },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+      index: true,
+    },
     tag: {
       type: String,
       required: false,
@@ -26,6 +32,6 @@ const noteSchema = new Schema(
   },
 );
 
-noteSchema.index({ tag: 1 });
+noteSchema.index({ tag: 1, userId: 1 });
 
 export const Note = model('Note', noteSchema);
